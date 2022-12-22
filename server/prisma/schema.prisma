@@ -1,0 +1,72 @@
+datasource postgres {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  accounts      Account[]
+  createdAt     DateTime  @default(now())
+  emailVerified String?   @unique
+  firstName     String?
+  id            String    @id @default(cuid())
+  image         String?
+  lastName      String?
+  notes         Note[]
+  password      String
+  roles         Json
+  sessions      Session[]
+  updatedAt     DateTime  @updatedAt
+  username      String    @unique
+}
+
+model Account {
+  accessToken       String?
+  acctype           String?
+  createdAt         DateTime @default(now())
+  expiresAt         String?
+  id                String   @id @default(cuid())
+  idToken           String?
+  provider          String?
+  providerAccountId String?
+  refreshToken      String?
+  scope             String?
+  sessionState      String?
+  tokenType         String?
+  updatedAt         DateTime @updatedAt
+  user              User[]
+  userId            String
+}
+
+model Session {
+  createdAt    DateTime @default(now())
+  expires      DateTime
+  id           String   @id @default(cuid())
+  sessionToken String?  @unique
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id])
+  userId       String
+  userId       String
+}
+
+model Note {
+  body      String?
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  title     String?
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  userId    String
+}
+
+model VerificationToken {
+  createdAt DateTime  @default(now())
+  expires   DateTime?
+  id        String    @id @default(cuid())
+  token     String?   @unique
+  updatedAt DateTime  @updatedAt
+}
